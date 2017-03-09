@@ -8,6 +8,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using GDIDrawer;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Runtime.Serialization;
+
 namespace event_timerExample
 {
     public partial class Form1 : Form
@@ -60,6 +64,50 @@ namespace event_timerExample
         {
             int value = Convert.ToInt32(textBox1.Text);
             listBox1.SelectedIndex = value;
+        }
+
+        //this is for saving using file stream and binary formatter via serialization
+        private void button4_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                FileStream fs = new FileStream("circles.bin", FileMode.Create, FileAccess.Write);
+                BinaryFormatter bf = new BinaryFormatter();
+
+                //this is if it isn't serialized
+                //BinaryWriter bw = new BinaryWriter(fs);
+                //foreach (int iValue in m_iArray)
+                //    bw.Write(iValue);
+                //bw.Close();
+
+                bf.Serialize(fs, xLocations);
+                fs.Close();
+            }
+            catch
+            {
+
+            }
+        }
+
+        //this is for loading files that have been serialized
+        private void button5_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                FileStream fs = new FileStream("circles.bin", FileMode.Open, FileAccess.Read);
+                BinaryFormatter bf = new BinaryFormatter();
+
+                //this is for reading non-serialized items, it reads the items out in bytes specifically
+                //BinaryReader br = new BinaryReader(fs);
+
+                xLocations = (List<int>)bf.Deserialize(fs);
+
+                fs.Close();
+            }
+            catch
+            {
+
+            }
         }
     }
 }
